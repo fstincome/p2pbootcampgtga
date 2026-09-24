@@ -15,6 +15,13 @@
       "when": 1790245072305,
       "tag": "0001_complete_bootcamp_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790245089684,
+      "tag": "0002_secure_bootcamp_storage",
+      "breakpoints": true
     }
   ]
 }
