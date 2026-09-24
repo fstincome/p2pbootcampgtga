@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate, Link, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { ensureAdminAccount } from "@/lib/admin.functions";
 import { toast } from "sonner";
 import { ArrowLeft, Lock } from "lucide-react";
 import { useI18n } from "@/lib/providers";
@@ -36,18 +35,7 @@ function LoginPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    let { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error && /invalid|credentials/i.test(error.message)) {
-      try {
-        await ensureAdminAccount({ data: { email, password } });
-        const retry = await supabase.auth.signInWithPassword({ email, password });
-        error = retry.error;
-      } catch (e: any) {
-        toast.error(e.message ?? "Init failed.");
-        setLoading(false);
-        return;
-      }
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) { toast.error(error.message); return; }
     toast.success(t("login.success"));

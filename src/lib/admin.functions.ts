@@ -1,7 +1,4 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-
-const ADMIN_EMAIL = "advaxe.mucatcha@gmail.com";
 
 /** Public: returns just the registration count for the landing page. */
 export const getPublicRegistrationCount = createServerFn({ method: "GET" }).handler(async () => {
@@ -40,39 +37,6 @@ export const getSelectedParticipants = createServerFn({ method: "GET" }).handler
   if (error) throw new Error(error.message);
   return { participants: (data ?? []) as SelectedParticipant[] };
 });
-
-/** Idempotent: ensures the single allowlisted admin account exists. */
-export const ensureAdminAccount = createServerFn({ method: "POST" })
-  .inputValidator((input) => z.object({
-    email: z.string().email(),
-    password: z.string().min(8).max(72),
-  }).parse(input))
-  .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (data.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-      throw new Error("Email non autorisé.");
-    }
-    // Check if user already exists
-    const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
-    if (listErr) throw new Error(listErr.message);
-    const existing = list.users.find((u) => u.email?.toLowerCase() === data.email.toLowerCase());
-    if (existing) {
-      await supabaseAdmin.from("user_roles").upsert({ user_id: existing.id, role: "admin" });
-      return { created: false };
-    }
-
-    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
-      email: data.email,
-      password: data.password,
-      email_confirm: true,
-    });
-    if (error) throw new Error(error.message);
-    if (created.user) {
-      const { error: roleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: created.user.id, role: "admin" });
-      if (roleError) throw new Error(roleError.message);
-    }
-    return { created: true };
-  });
 
 export type PublicProject = {
   id: string;

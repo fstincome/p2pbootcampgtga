@@ -116,8 +116,9 @@ function SpeakerCard({ speaker, onChange, onDelete }: { speaker: Speaker; onChan
     const path = `${draft.id}-${Date.now()}.${ext}`;
     const { error: upErr } = await supabase.storage.from("speakers").upload(path, file, { upsert: true, contentType: file.type });
     if (upErr) { setUploading(false); alert(upErr.message); return; }
-    const { data: pub } = supabase.storage.from("speakers").getPublicUrl(path);
-    const url = pub.publicUrl;
+    const { data: signed, error: signErr } = await supabase.storage.from("speakers").createSignedUrl(path, 60 * 60 * 24 * 7);
+    if (signErr) { setUploading(false); alert(signErr.message); return; }
+    const url = signed.signedUrl;
     const { data, error } = await supabase.from("speakers").update({ avatar_url: url, updated_at: new Date().toISOString() }).eq("id", draft.id).select().single();
     setUploading(false);
     if (!error && data) {
