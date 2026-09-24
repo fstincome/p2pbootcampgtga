@@ -22,11 +22,23 @@ const NAV = [
 ] as const;
 
 export const Route = createFileRoute("/dashboard")({
+  ssr: false,
   beforeLoad: async () => {
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/login" });
   },
   component: Dashboard,
+  head: () => ({
+    meta: [
+      { title: "Tableau de suivi — Bitcoin Builders Burundi" },
+      { name: "description", content: "Gestion privée des candidatures et du programme Bitcoin Builders Burundi." },
+      { property: "og:title", content: "Tableau de suivi — Bitcoin Builders Burundi" },
+      { property: "og:description", content: "Espace privé de gestion du bootcamp." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
 });
 
 type Registration = {

@@ -10,6 +10,16 @@ import { Zap, Users, CalendarDays, ListChecks, GraduationCap, Mail } from "lucid
 
 export const Route = createFileRoute("/")({
   component: Landing,
+  head: () => ({
+    meta: [
+      { title: "Bitcoin Builders Burundi — Bootcamps Bujumbura et Gitega" },
+      { name: "description", content: "Bootcamps pratiques Bitcoin et Lightning Network organisés au Burundi par Free Tech Institute." },
+      { property: "og:title", content: "Bitcoin Builders Burundi" },
+      { property: "og:description", content: "Formation pratique et hackathon Bitcoin à Bujumbura et Gitega." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
 });
 
 function Landing() {

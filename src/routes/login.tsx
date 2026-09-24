@@ -7,11 +7,23 @@ import { ArrowLeft, Lock } from "lucide-react";
 import { useI18n } from "@/lib/providers";
 
 export const Route = createFileRoute("/login")({
+  ssr: false,
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) throw redirect({ to: "/dashboard" });
   },
   component: LoginPage,
+  head: () => ({
+    meta: [
+      { title: "Connexion organisateur — Bitcoin Builders Burundi" },
+      { name: "description", content: "Accès privé à la gestion du bootcamp Bitcoin Builders Burundi." },
+      { property: "og:title", content: "Connexion organisateur — Bitcoin Builders Burundi" },
+      { property: "og:description", content: "Accès privé à la gestion du bootcamp." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
 });
 
 function LoginPage() {

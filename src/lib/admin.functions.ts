@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const ADMIN_EMAIL = "advaxe.mucatcha@gmail.com";
 
 /** Public: returns just the registration count for the landing page. */
 export const getPublicRegistrationCount = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { count, error } = await supabaseAdmin
     .from("registrations")
     .select("*", { count: "exact", head: true });
@@ -21,6 +21,7 @@ export type SelectedParticipant = {
 
 /** Public: names of accepted (selected) participants for the active cohort. */
 export const getSelectedParticipants = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: cohort } = await supabaseAdmin
     .from("cohorts")
     .select("id")
@@ -47,6 +48,7 @@ export const ensureAdminAccount = createServerFn({ method: "POST" })
     password: z.string().min(8).max(72),
   }).parse(input))
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     if (data.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
       throw new Error("Email non autorisé.");
     }
@@ -54,14 +56,21 @@ export const ensureAdminAccount = createServerFn({ method: "POST" })
     const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
     if (listErr) throw new Error(listErr.message);
     const existing = list.users.find((u) => u.email?.toLowerCase() === data.email.toLowerCase());
-    if (existing) return { created: false };
+    if (existing) {
+      await supabaseAdmin.from("user_roles").upsert({ user_id: existing.id, role: "admin" });
+      return { created: false };
+    }
 
-    const { error } = await supabaseAdmin.auth.admin.createUser({
+    const { data: created, error } = await supabaseAdmin.auth.admin.createUser({
       email: data.email,
       password: data.password,
       email_confirm: true,
     });
     if (error) throw new Error(error.message);
+    if (created.user) {
+      const { error: roleError } = await supabaseAdmin.from("user_roles").upsert({ user_id: created.user.id, role: "admin" });
+      if (roleError) throw new Error(roleError.message);
+    }
     return { created: true };
   });
 
@@ -79,6 +88,7 @@ export type PublicProject = {
 
 /** Public: projects the admin has marked as public. GitHub links and slide decks stay private (admin only). */
 export const getPublicProjects = createServerFn({ method: "GET" }).handler(async () => {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("project_submissions")
     .select("id,team_name,project_name,team_leader,description,website_url,docs_url,preview_image_url,award_rank")

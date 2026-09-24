@@ -9,6 +9,16 @@ import { isRegistrationClosed } from "@/lib/deadline";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
+  head: () => ({
+    meta: [
+      { title: "Inscription — Bitcoin Builders Burundi" },
+      { name: "description", content: "Inscrivez-vous au prochain bootcamp pratique Bitcoin et Lightning Network au Burundi." },
+      { property: "og:title", content: "Inscription — Bitcoin Builders Burundi" },
+      { property: "og:description", content: "Candidatez au prochain bootcamp Bitcoin au Burundi." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
 });
 
 const LANGUAGES = [
