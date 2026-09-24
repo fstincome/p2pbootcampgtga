@@ -14,42 +14,378 @@ export type Database = {
   }
   public: {
     Tables: {
-      registrations: {
+      cohorts: {
+        Row: {
+          city: string | null
+          created_at: string
+          days: number
+          end_date: string | null
+          highlights: string[]
+          highlights_en: string[]
+          id: string
+          is_active: boolean
+          is_public: boolean
+          location: string | null
+          name: string
+          slug: string
+          sort_order: number
+          start_date: string | null
+          summary: string | null
+          summary_en: string | null
+          tagline: string | null
+          tagline_en: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string
+          days?: number
+          end_date?: string | null
+          highlights?: string[]
+          highlights_en?: string[]
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          location?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          start_date?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          tagline?: string | null
+          tagline_en?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string
+          days?: number
+          end_date?: string | null
+          highlights?: string[]
+          highlights_en?: string[]
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          location?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          start_date?: string | null
+          summary?: string | null
+          summary_en?: string | null
+          tagline?: string | null
+          tagline_en?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      contact_messages: {
         Row: {
           created_at: string
           email: string
-          experience_level: string
-          full_name: string
-          hackathon_choice: string
           id: string
-          motivation: string | null
-          phone: string | null
-          profession: string | null
-          status: string
+          message: string
+          name: string
         }
         Insert: {
           created_at?: string
           email: string
-          experience_level?: string
-          full_name: string
-          hackathon_choice?: string
           id?: string
-          motivation?: string | null
-          phone?: string | null
-          profession?: string | null
-          status?: string
+          message: string
+          name: string
         }
         Update: {
           created_at?: string
           email?: string
-          experience_level?: string
-          full_name?: string
-          hackathon_choice?: string
           id?: string
+          message?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      project_submissions: {
+        Row: {
+          award_rank: number | null
+          cohort_id: string | null
+          contact_email: string | null
+          created_at: string
+          description: string | null
+          docs_url: string | null
+          github_backend_url: string | null
+          github_url: string | null
+          id: string
+          is_public: boolean
+          members: string | null
+          preview_image_url: string | null
+          project_name: string | null
+          slides_link: string | null
+          slides_pdf_url: string | null
+          status: string
+          team_leader: string | null
+          team_name: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          award_rank?: number | null
+          cohort_id?: string | null
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          docs_url?: string | null
+          github_backend_url?: string | null
+          github_url?: string | null
+          id?: string
+          is_public?: boolean
+          members?: string | null
+          preview_image_url?: string | null
+          project_name?: string | null
+          slides_link?: string | null
+          slides_pdf_url?: string | null
+          status?: string
+          team_leader?: string | null
+          team_name: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          award_rank?: number | null
+          cohort_id?: string | null
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          docs_url?: string | null
+          github_backend_url?: string | null
+          github_url?: string | null
+          id?: string
+          is_public?: boolean
+          members?: string | null
+          preview_image_url?: string | null
+          project_name?: string | null
+          slides_link?: string | null
+          slides_pdf_url?: string | null
+          status?: string
+          team_leader?: string | null
+          team_name?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_submissions_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registrations: {
+        Row: {
+          available_all_days: boolean
+          cohort_id: string | null
+          created_at: string
+          dev_role: string | null
+          email: string
+          experience_level: string
+          full_name: string
+          group_name: string | null
+          hackathon_choice: string
+          has_laptop: boolean
+          id: string
+          languages: string[]
+          motivation: string | null
+          phone: string | null
+          problem_idea: string | null
+          profession: string | null
+          status: string
+        }
+        Insert: {
+          available_all_days?: boolean
+          cohort_id?: string | null
+          created_at?: string
+          dev_role?: string | null
+          email: string
+          experience_level?: string
+          full_name: string
+          group_name?: string | null
+          hackathon_choice?: string
+          has_laptop?: boolean
+          id?: string
+          languages?: string[]
           motivation?: string | null
           phone?: string | null
+          problem_idea?: string | null
           profession?: string | null
           status?: string
+        }
+        Update: {
+          available_all_days?: boolean
+          cohort_id?: string | null
+          created_at?: string
+          dev_role?: string | null
+          email?: string
+          experience_level?: string
+          full_name?: string
+          group_name?: string | null
+          hackathon_choice?: string
+          has_laptop?: boolean
+          id?: string
+          languages?: string[]
+          motivation?: string | null
+          phone?: string | null
+          problem_idea?: string | null
+          profession?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrations_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schedule_slots: {
+        Row: {
+          cohort_id: string | null
+          created_at: string
+          day: number
+          end_time: string | null
+          id: string
+          sort_order: number
+          speaker_id: string | null
+          start_time: string
+          theme: string | null
+          theme_en: string | null
+          title: string
+          title_en: string | null
+          updated_at: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          created_at?: string
+          day: number
+          end_time?: string | null
+          id?: string
+          sort_order?: number
+          speaker_id?: string | null
+          start_time: string
+          theme?: string | null
+          theme_en?: string | null
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cohort_id?: string | null
+          created_at?: string
+          day?: number
+          end_time?: string | null
+          id?: string
+          sort_order?: number
+          speaker_id?: string | null
+          start_time?: string
+          theme?: string | null
+          theme_en?: string | null
+          title?: string
+          title_en?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedule_slots_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedule_slots_speaker_id_fkey"
+            columns: ["speaker_id"]
+            isOneToOne: false
+            referencedRelation: "speakers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      speakers: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          bio_en: string | null
+          cohort_id: string | null
+          created_at: string
+          id: string
+          name: string
+          role: string | null
+          role_en: string | null
+          sort_order: number
+          twitter_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          bio_en?: string | null
+          cohort_id?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          role?: string | null
+          role_en?: string | null
+          sort_order?: number
+          twitter_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          bio_en?: string | null
+          cohort_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string | null
+          role_en?: string | null
+          sort_order?: number
+          twitter_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "speakers_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -58,10 +394,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -188,6 +530,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

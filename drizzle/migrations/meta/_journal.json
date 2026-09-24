@@ -8,6 +8,13 @@
       "when": 1790245025738,
       "tag": "0000_create_registrations",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790245072305,
+      "tag": "0001_complete_bootcamp_schema",
+      "breakpoints": true
     }
   ]
 }
