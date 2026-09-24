@@ -39,6 +39,7 @@ const schema = z.object({
   has_laptop: z.boolean(),
   problem_idea: z.string().trim().max(1000).optional().or(z.literal("")),
   motivation: z.string().trim().max(1000).optional().or(z.literal("")),
+  cohort_id: z.string().uuid(),
 });
 
 function RegisterPage() {
@@ -48,9 +49,16 @@ function RegisterPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [languages, setLanguages] = useState<string[]>([]);
   const [closed, setClosed] = useState(false);
+  const [cohorts, setCohorts] = useState<Array<{ id: string; name: string; city: string | null; is_active: boolean }>>([]);
 
   useEffect(() => {
     setClosed(isRegistrationClosed());
+    supabase
+      .from("cohorts")
+      .select("id,name,city,is_active")
+      .eq("is_public", true)
+      .order("sort_order")
+      .then(({ data }) => setCohorts(data ?? []));
   }, []);
 
   function toggleLang(l: string) {
@@ -110,6 +118,22 @@ function RegisterPage() {
 
 
         <form onSubmit={onSubmit} className="mt-8 grid gap-5">
+          <Field label="Édition / Edition" error={errors.cohort_id}>
+            <select
+              name="cohort_id"
+              required
+              defaultValue={cohorts.find((cohort) => cohort.is_active)?.id ?? ""}
+              key={cohorts.map((cohort) => cohort.id).join("-")}
+              className={field}
+            >
+              <option value="" disabled>Choisir une édition / Choose an edition</option>
+              {cohorts.map((cohort) => (
+                <option key={cohort.id} value={cohort.id}>
+                  {cohort.name}{cohort.city ? ` — ${cohort.city}` : ""}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label={t("reg.full_name")} error={errors.full_name}>
             <input name="full_name" required maxLength={120} className={field} placeholder="Jean Niyongabo" />
           </Field>
