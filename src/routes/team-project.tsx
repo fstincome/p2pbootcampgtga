@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Rocket, Upload } from "lucide-react";
+import { Clock, Rocket, Upload } from "lucide-react";
 import { useI18n } from "@/lib/providers";
 import { getSelectedParticipants, type SelectedParticipant } from "@/lib/admin.functions";
 
@@ -36,6 +36,17 @@ const schema = z.object({
 
 // Submission deadline: today at 14:00 (Bujumbura, UTC+2)
 const SUBMISSION_DEADLINE = new Date("2026-09-25T14:00:00+02:00");
+const URGENT_MS = 15 * 60 * 1000;
+
+function formatRemaining(ms: number) {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const sec = totalSec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}min ${String(sec).padStart(2, "0")}s`;
+  if (m > 0) return `${m}min ${String(sec).padStart(2, "0")}s`;
+  return `${sec}s`;
+}
 
 const L = {
   fr: {
@@ -61,6 +72,10 @@ const L = {
     needSlides: "Ajoutez une présentation (fichier ou lien).",
     needDesign: "Ajoutez l'image du design du projet.",
     closed: "Les soumissions sont closes depuis 14h00 (heure de Bujumbura).",
+    closingAt: "Clôture des soumissions à 14h00 (heure de Bujumbura)",
+    timeLeft: "Temps restant",
+    minLeft: "min restantes",
+    urgent: "Dernières minutes — envoyez votre projet maintenant !",
   },
   en: {
     kicker: "Team leaders only",
@@ -85,6 +100,10 @@ const L = {
     needSlides: "Add a presentation (file or link).",
     needDesign: "Add the project design image.",
     closed: "Submissions closed at 2:00 PM (Bujumbura time).",
+    closingAt: "Submissions close at 2:00 PM (Bujumbura time)",
+    timeLeft: "Time left",
+    minLeft: "min left",
+    urgent: "Final minutes — submit your project now!",
   },
 };
 
@@ -99,7 +118,18 @@ function TeamProjectPage() {
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const closed = Date.now() > SUBMISSION_DEADLINE.getTime();
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const remainingMs = now == null ? null : SUBMISSION_DEADLINE.getTime() - now;
+  const closed = remainingMs != null && remainingMs <= 0;
+  const minutesLeft = remainingMs == null ? 0 : Math.ceil(remainingMs / 60000);
+  const urgent = remainingMs != null && remainingMs > 0 && remainingMs < URGENT_MS;
 
   useEffect(() => {
     getSelectedParticipants().then((r) => setPeople(r.participants)).catch(() => {});
@@ -116,7 +146,7 @@ function TeamProjectPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (closed) {
+    if (Date.now() > SUBMISSION_DEADLINE.getTime()) {
       toast.error(s.closed);
       return;
     }
@@ -199,6 +229,28 @@ function TeamProjectPage() {
       <div className="rounded-2xl border border-border bg-card p-8 md:p-10">
         <div className="font-mono text-xs uppercase tracking-widest text-primary">{s.kicker}</div>
         <h1 className="mt-2 text-3xl font-bold">{s.title}</h1>
+
+        {now != null && remainingMs != null && !closed && (
+          <div
+            role="alert"
+            className={`mt-6 rounded-md border px-4 py-3 text-sm ${
+              urgent
+                ? "border-destructive/40 bg-destructive/10 text-destructive"
+                : "border-primary/40 bg-primary/10 text-primary"
+            }`}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <span className="inline-flex items-center gap-2 font-semibold">
+                <Clock className="h-4 w-4" />
+                {s.timeLeft} : {formatRemaining(remainingMs)}
+              </span>
+              <span className="font-mono text-xs">
+                {minutesLeft} {s.minLeft}
+              </span>
+            </div>
+            <p className="mt-1 text-xs opacity-80">{urgent ? s.urgent : s.closingAt}</p>
+          </div>
+        )}
 
         {closed ? (
           <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
