@@ -394,6 +394,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_registration_count: { Args: never; Returns: number }
+      get_selected_participants: {
+        Args: never
+        Returns: {
+          dev_role: string
+          full_name: string
+          group_name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
