@@ -200,6 +200,11 @@ function TeamProjectPage() {
         <div className="font-mono text-xs uppercase tracking-widest text-primary">{s.kicker}</div>
         <h1 className="mt-2 text-3xl font-bold">{s.title}</h1>
 
+        {closed ? (
+          <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {s.closed}
+          </p>
+        ) : (
         <form onSubmit={onSubmit} className="mt-8 grid gap-5">
           <div className="grid gap-5 md:grid-cols-2">
             <Field label={s.team} error={errors.team_name}>
