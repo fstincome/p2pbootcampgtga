@@ -34,6 +34,9 @@ const schema = z.object({
   slides_link: url.optional().or(z.literal("")),
 });
 
+// Submission deadline: today at 14:00 (Bujumbura, UTC+2)
+const SUBMISSION_DEADLINE = new Date("2026-09-25T14:00:00+02:00");
+
 const L = {
   fr: {
     kicker: "Réservé aux chefs d'équipe",
@@ -57,6 +60,7 @@ const L = {
     ok: "Projet envoyé, merci !",
     needSlides: "Ajoutez une présentation (fichier ou lien).",
     needDesign: "Ajoutez l'image du design du projet.",
+    closed: "Les soumissions sont closes depuis 14h00 (heure de Bujumbura).",
   },
   en: {
     kicker: "Team leaders only",
@@ -80,6 +84,7 @@ const L = {
     ok: "Project submitted, thank you!",
     needSlides: "Add a presentation (file or link).",
     needDesign: "Add the project design image.",
+    closed: "Submissions closed at 2:00 PM (Bujumbura time).",
   },
 };
 
@@ -94,6 +99,7 @@ function TeamProjectPage() {
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const closed = Date.now() > SUBMISSION_DEADLINE.getTime();
 
   useEffect(() => {
     getSelectedParticipants().then((r) => setPeople(r.participants)).catch(() => {});
@@ -110,6 +116,10 @@ function TeamProjectPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (closed) {
+      toast.error(s.closed);
+      return;
+    }
     setErrors({});
     const fd = new FormData(e.currentTarget);
     const parsed = schema.safeParse({
@@ -190,6 +200,11 @@ function TeamProjectPage() {
         <div className="font-mono text-xs uppercase tracking-widest text-primary">{s.kicker}</div>
         <h1 className="mt-2 text-3xl font-bold">{s.title}</h1>
 
+        {closed ? (
+          <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {s.closed}
+          </p>
+        ) : (
         <form onSubmit={onSubmit} className="mt-8 grid gap-5">
           <div className="grid gap-5 md:grid-cols-2">
             <Field label={s.team} error={errors.team_name}>
@@ -268,6 +283,7 @@ function TeamProjectPage() {
             <Rocket className="h-4 w-4" /> {loading ? s.sending : s.submit}
           </button>
         </form>
+        )}
       </div>
     </main>
   );
