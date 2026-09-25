@@ -231,6 +231,28 @@ function TeamProjectPage() {
         <div className="font-mono text-xs uppercase tracking-widest text-primary">{s.kicker}</div>
         <h1 className="mt-2 text-3xl font-bold">{s.title}</h1>
 
+        {now != null && remainingMs != null && !closed && (
+          <div
+            role="alert"
+            className={`mt-6 rounded-md border px-4 py-3 text-sm ${
+              urgent
+                ? "border-destructive/40 bg-destructive/10 text-destructive"
+                : "border-primary/40 bg-primary/10 text-primary"
+            }`}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+              <span className="inline-flex items-center gap-2 font-semibold">
+                <Clock className="h-4 w-4" />
+                {s.timeLeft} : {formatRemaining(remainingMs)}
+              </span>
+              <span className="font-mono text-xs">
+                {minutesLeft} {s.minLeft}
+              </span>
+            </div>
+            <p className="mt-1 text-xs opacity-80">{urgent ? s.urgent : s.closingAt}</p>
+          </div>
+        )}
+
         {closed ? (
           <p className="mt-8 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {s.closed}
