@@ -36,7 +36,6 @@ const schema = z.object({
 
 // Submission deadline: today at 14:00 (Bujumbura, UTC+2)
 const SUBMISSION_DEADLINE = new Date("2026-09-25T14:00:00+02:00");
-const DEADLINE_LABEL = "14h00";
 const URGENT_MS = 15 * 60 * 1000;
 
 function formatRemaining(ms: number) {
