@@ -60,6 +60,7 @@ const L = {
     ok: "Projet envoyé, merci !",
     needSlides: "Ajoutez une présentation (fichier ou lien).",
     needDesign: "Ajoutez l'image du design du projet.",
+    closed: "Les soumissions sont closes depuis 14h00 (heure de Bujumbura).",
   },
   en: {
     kicker: "Team leaders only",
@@ -83,6 +84,7 @@ const L = {
     ok: "Project submitted, thank you!",
     needSlides: "Add a presentation (file or link).",
     needDesign: "Add the project design image.",
+    closed: "Submissions closed at 2:00 PM (Bujumbura time).",
   },
 };
 
