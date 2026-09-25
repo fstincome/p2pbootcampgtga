@@ -149,7 +149,7 @@ function TeamProjectPage() {
 
       let slides_pdf_url: string | null = null;
       if (mode === "upload" && file) {
-        if (file.size > 25 * 1024 * 1024) throw new Error("25 MB max");
+        if (file.size > 20 * 1024 * 1024) throw new Error("20 MB max");
         const ext = (file.name.split(".").pop() || "pdf").toLowerCase();
         if (!["pdf", "pptx", "ppt"].includes(ext)) throw new Error(".pdf / .pptx");
         const path = `slides/${crypto.randomUUID()}.${ext}`;
