@@ -119,7 +119,18 @@ function TeamProjectPage() {
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const closed = Date.now() > SUBMISSION_DEADLINE.getTime();
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const remainingMs = now == null ? null : SUBMISSION_DEADLINE.getTime() - now;
+  const closed = remainingMs != null && remainingMs <= 0;
+  const minutesLeft = remainingMs == null ? 0 : Math.ceil(remainingMs / 60000);
+  const urgent = remainingMs != null && remainingMs > 0 && remainingMs < URGENT_MS;
 
   useEffect(() => {
     getSelectedParticipants().then((r) => setPeople(r.participants)).catch(() => {});
