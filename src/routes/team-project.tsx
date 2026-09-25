@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Rocket, Upload } from "lucide-react";
+import { Clock, Rocket, Upload } from "lucide-react";
 import { useI18n } from "@/lib/providers";
 import { getSelectedParticipants, type SelectedParticipant } from "@/lib/admin.functions";
 
@@ -36,6 +36,18 @@ const schema = z.object({
 
 // Submission deadline: today at 14:00 (Bujumbura, UTC+2)
 const SUBMISSION_DEADLINE = new Date("2026-09-25T14:00:00+02:00");
+const DEADLINE_LABEL = "14h00";
+const URGENT_MS = 15 * 60 * 1000;
+
+function formatRemaining(ms: number) {
+  const totalSec = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const sec = totalSec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}min ${String(sec).padStart(2, "0")}s`;
+  if (m > 0) return `${m}min ${String(sec).padStart(2, "0")}s`;
+  return `${sec}s`;
+}
 
 const L = {
   fr: {
@@ -61,6 +73,10 @@ const L = {
     needSlides: "Ajoutez une présentation (fichier ou lien).",
     needDesign: "Ajoutez l'image du design du projet.",
     closed: "Les soumissions sont closes depuis 14h00 (heure de Bujumbura).",
+    closingAt: "Clôture des soumissions à 14h00 (heure de Bujumbura)",
+    timeLeft: "Temps restant",
+    minLeft: "min restantes",
+    urgent: "Dernières minutes — envoyez votre projet maintenant !",
   },
   en: {
     kicker: "Team leaders only",
@@ -85,6 +101,10 @@ const L = {
     needSlides: "Add a presentation (file or link).",
     needDesign: "Add the project design image.",
     closed: "Submissions closed at 2:00 PM (Bujumbura time).",
+    closingAt: "Submissions close at 2:00 PM (Bujumbura time)",
+    timeLeft: "Time left",
+    minLeft: "min left",
+    urgent: "Final minutes — submit your project now!",
   },
 };
 
