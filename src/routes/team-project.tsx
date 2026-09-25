@@ -99,6 +99,7 @@ function TeamProjectPage() {
   const [designFile, setDesignFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const closed = Date.now() > SUBMISSION_DEADLINE.getTime();
 
   useEffect(() => {
     getSelectedParticipants().then((r) => setPeople(r.participants)).catch(() => {});
