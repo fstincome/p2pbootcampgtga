@@ -147,7 +147,7 @@ function TeamProjectPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (closed) {
+    if (Date.now() > SUBMISSION_DEADLINE.getTime()) {
       toast.error(s.closed);
       return;
     }
