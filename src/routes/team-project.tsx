@@ -283,6 +283,7 @@ function TeamProjectPage() {
             <Rocket className="h-4 w-4" /> {loading ? s.sending : s.submit}
           </button>
         </form>
+        )}
       </div>
     </main>
   );
