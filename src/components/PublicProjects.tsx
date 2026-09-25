@@ -3,6 +3,15 @@ import { Globe, ExternalLink, User, Trophy } from "lucide-react";
 import { getPublicProjects, type PublicProject } from "@/lib/admin.functions";
 import { useI18n } from "@/lib/providers";
 
+function placeLabel(rank: number, en: boolean) {
+  if (en) {
+    const mod100 = rank % 100;
+    const suffix = mod100 >= 11 && mod100 <= 13 ? "th" : rank % 10 === 1 ? "st" : rank % 10 === 2 ? "nd" : rank % 10 === 3 ? "rd" : "th";
+    return `${rank}${suffix} place`;
+  }
+  return rank === 1 ? "1re place" : `${rank}e place`;
+}
+
 export function usePublicProjects() {
   const [projects, setProjects] = useState<PublicProject[]>([]);
   useEffect(() => {
@@ -20,7 +29,7 @@ export function ProjectGrid({ projects }: { projects: PublicProject[] }) {
         <article key={p.id} className={`relative flex flex-col rounded-xl border bg-card p-5 ${p.award_rank ? "border-primary ring-1 ring-primary" : "border-border"}`}>
           {p.award_rank && (
             <div className="absolute -top-3 left-4 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow">
-              🏆 {p.award_rank === 1 ? (en ? "Winner · 1st place" : "Primé · 1er prix") : (en ? "Winner · 2nd place" : "Primé · 2e prix")}
+              🏆 {placeLabel(p.award_rank, en)}
             </div>
           )}
           {p.image_url && <img src={p.image_url} alt={p.project_name ?? p.team_name} className="mb-4 h-40 w-full rounded-md border border-border object-cover" />}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ExternalLink, FileText, Github, Globe, Trash2 } from "lucide-react";
 import { useI18n } from "@/lib/providers";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type Submission = {
   id: string;
@@ -52,11 +53,12 @@ export function ProjectsAdmin() {
     load();
   }, []);
 
-  async function setRank(r: Submission, rank: 1 | 2) {
-    const next = r.award_rank === rank ? null : rank;
+  async function setRank(r: Submission, rank: number | null) {
+    const next = rank;
     if (next) await supabase.from("project_submissions").update({ award_rank: null } as any).eq("award_rank", next);
     const { error } = await supabase.from("project_submissions").update({ award_rank: next } as any).eq("id", r.id);
     if (!error) setRows((rs) => rs.map((x) => (x.id === r.id ? { ...x, award_rank: next } : x.award_rank === next ? { ...x, award_rank: null } : x)));
+    else alert(error.message);
   }
 
   async function togglePublic(r: Submission) {
@@ -119,12 +121,18 @@ export function ProjectsAdmin() {
                   className={`rounded-md px-3 py-1.5 text-xs font-semibold ${r.is_public ? "border border-border hover:border-destructive" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}>
                   {r.is_public ? t("proj.makePrivate") : t("proj.makePublic")}
                 </button>
-                {([1, 2] as const).map((k) => (
-                  <button key={k} onClick={() => setRank(r, k)}
-                    className={`rounded-md px-3 py-1.5 text-xs font-semibold ${r.award_rank === k ? "bg-accent text-accent-foreground ring-1 ring-primary" : "border border-border hover:border-primary"}`}>
-                    🏆 {k === 1 ? "1er" : "2e"}
-                  </button>
-                ))}
+                <Select value={r.award_rank ? String(r.award_rank) : "none"} onValueChange={(value) => setRank(r, value === "none" ? null : Number(value))}>
+                  <SelectTrigger className="h-8 w-36 text-xs" aria-label="Place du projet">
+                    <SelectValue placeholder="Choisir la place" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Non classé</SelectItem>
+                    {rows.map((_, index) => {
+                      const place = index + 1;
+                      return <SelectItem key={place} value={String(place)}>🏆 {place === 1 ? "1re place" : `${place}e place`}</SelectItem>;
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="mt-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
                 {new Date(r.created_at).toLocaleString()}
