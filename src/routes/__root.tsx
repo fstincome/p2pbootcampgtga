@@ -52,10 +52,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "BOOTCAMP GITEGA — Free Tech Institute × Vexl" },
+      { title: "BOOTCAMP GITEGA — BitDevs Gitega" },
       { name: "description", content: "Cinq jours de formation pratique et de hackathon Bitcoin à Gitega, du 21 au 25 septembre 2026." },
-      { property: "og:title", content: "BOOTCAMP GITEGA — Free Tech Institute × Vexl" },
-      { name: "twitter:title", content: "BOOTCAMP GITEGA — Free Tech Institute × Vexl" },
+      { property: "og:title", content: "BOOTCAMP GITEGA — BitDevs Gitega" },
+      { name: "twitter:title", content: "BOOTCAMP GITEGA — BitDevs Gitega" },
       { property: "og:description", content: "Cinq jours de formation pratique et de hackathon Bitcoin à Gitega, du 21 au 25 septembre 2026." },
       { name: "twitter:description", content: "Cinq jours de formation pratique et de hackathon Bitcoin à Gitega, du 21 au 25 septembre 2026." },
       { name: "twitter:card", content: "summary_large_image" },
