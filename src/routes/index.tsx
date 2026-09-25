@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Bitcoin Builders Burundi — Bootcamps Bujumbura et Gitega" },
-      { name: "description", content: "Bootcamps pratiques Bitcoin et Lightning Network organisés au Burundi par Free Tech Institute." },
+      { name: "description", content: "Bootcamps pratiques Bitcoin et Lightning Network organisés au Burundi par BitDevs Gitega." },
       { property: "og:title", content: "Bitcoin Builders Burundi" },
       { property: "og:description", content: "Formation pratique et hackathon Bitcoin à Bujumbura et Gitega." },
       { property: "og:type", content: "website" },
