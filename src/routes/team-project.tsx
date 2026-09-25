@@ -51,7 +51,7 @@ const L = {
     slides: "Présentation *",
     upload: "Téléverser un fichier",
     link: "Lien public (Google Slides…)",
-    file: "Choisir un fichier .pptx ou .pdf (25 Mo max)",
+    file: "Choisir un fichier .pptx ou .pdf (20 Mo max)",
     submit: "Envoyer le projet",
     sending: "Envoi…",
     ok: "Projet envoyé, merci !",
@@ -74,7 +74,7 @@ const L = {
     slides: "Presentation *",
     upload: "Upload a file",
     link: "Public link (Google Slides…)",
-    file: "Pick a .pptx or .pdf file (25 MB max)",
+    file: "Pick a .pptx or .pdf file (20 MB max)",
     submit: "Submit project",
     sending: "Sending…",
     ok: "Project submitted, thank you!",
@@ -149,7 +149,7 @@ function TeamProjectPage() {
 
       let slides_pdf_url: string | null = null;
       if (mode === "upload" && file) {
-        if (file.size > 25 * 1024 * 1024) throw new Error("25 MB max");
+        if (file.size > 20 * 1024 * 1024) throw new Error("20 MB max");
         const ext = (file.name.split(".").pop() || "pdf").toLowerCase();
         if (!["pdf", "pptx", "ppt"].includes(ext)) throw new Error(".pdf / .pptx");
         const path = `slides/${crypto.randomUUID()}.${ext}`;
