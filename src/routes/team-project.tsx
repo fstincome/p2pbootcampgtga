@@ -116,6 +116,10 @@ function TeamProjectPage() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (closed) {
+      toast.error(s.closed);
+      return;
+    }
     setErrors({});
     const fd = new FormData(e.currentTarget);
     const parsed = schema.safeParse({
