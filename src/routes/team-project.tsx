@@ -34,6 +34,9 @@ const schema = z.object({
   slides_link: url.optional().or(z.literal("")),
 });
 
+// Submission deadline: today at 14:00 (Bujumbura, UTC+2)
+const SUBMISSION_DEADLINE = new Date("2026-09-25T14:00:00+02:00");
+
 const L = {
   fr: {
     kicker: "Réservé aux chefs d'équipe",
