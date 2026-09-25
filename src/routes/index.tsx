@@ -1,4 +1,4 @@
-import { ProjectGrid, usePublicProjects } from "@/components/PublicProjects";
+import { AwardedProjectsHero, ProjectGrid, usePublicProjects } from "@/components/PublicProjects";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getPublicRegistrationCount } from "@/lib/admin.functions";
@@ -73,6 +73,8 @@ function Landing() {
               {t("hero.discover")}
             </Link>
           </div>
+
+          <AwardedProjectsHero projects={publicProjects} />
 
           <div className="mt-16 grid grid-cols-2 gap-4 md:grid-cols-3">
             {[
