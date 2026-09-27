@@ -115,21 +115,50 @@ export function ProjectsAdmin() {
                   <LinkPill href={signed[r.slides_pdf_url]} icon={FileText} label={r.slides_pdf_url.split(".").pop()?.toUpperCase() ?? "PDF"} />
                 )}
               </div>
-              <div className="mt-3 flex items-center gap-2">
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 {r.is_public && <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-mono uppercase text-primary">{t("proj.isPublic")}</span>}
                 <button onClick={() => togglePublic(r)}
                   className={`rounded-md px-3 py-1.5 text-xs font-semibold ${r.is_public ? "border border-border hover:border-destructive" : "bg-primary text-primary-foreground hover:bg-primary/90"}`}>
                   {r.is_public ? t("proj.makePrivate") : t("proj.makePublic")}
                 </button>
-                <Select value={r.award_rank ? String(r.award_rank) : "none"} onValueChange={(value) => setRank(r, value === "none" ? null : Number(value))}>
-                  <SelectTrigger className="h-8 w-36 text-xs" aria-label="Place du projet">
-                    <SelectValue placeholder="Choisir la place" />
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Place :</span>
+                {[1, 2, 3].map((place) => {
+                  const takenBy = rows.find((x) => x.award_rank === place && x.id !== r.id);
+                  const active = r.award_rank === place;
+                  return (
+                    <button
+                      key={place}
+                      onClick={() => setRank(r, active ? null : place)}
+                      title={takenBy ? `Occupée par ${takenBy.team_name} — cliquer pour remplacer` : undefined}
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold transition-colors ${
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : takenBy
+                            ? "border border-amber-500/60 text-amber-600 hover:bg-amber-500/10"
+                            : "border border-border hover:border-primary hover:text-primary"
+                      }`}
+                    >
+                      {place === 1 ? "🥇 1re" : place === 2 ? "🥈 2e" : "🥉 3e"}
+                    </button>
+                  );
+                })}
+                <Select value={r.award_rank && r.award_rank > 3 ? String(r.award_rank) : "none"} onValueChange={(value) => setRank(r, value === "none" ? null : Number(value))}>
+                  <SelectTrigger className="h-7 w-28 text-xs" aria-label="Autre place">
+                    <SelectValue placeholder="Autre…" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Non classé</SelectItem>
                     {rows.map((_, index) => {
                       const place = index + 1;
-                      return <SelectItem key={place} value={String(place)}>🏆 {place === 1 ? "1re place" : `${place}e place`}</SelectItem>;
+                      if (place <= 3) return null;
+                      const takenBy = rows.find((x) => x.award_rank === place && x.id !== r.id);
+                      return (
+                        <SelectItem key={place} value={String(place)}>
+                          🏆 {place}e place{takenBy ? ` (${takenBy.team_name})` : ""}
+                        </SelectItem>
+                      );
                     })}
                   </SelectContent>
                 </Select>
